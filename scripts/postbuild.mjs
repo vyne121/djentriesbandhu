@@ -1,0 +1,13 @@
+import { writeFile, copyFile } from "node:fs/promises";
+import { resolve } from "node:path";
+import { band, pageAvailable } from "../app/content.ts";
+const output = resolve("build/client");
+const origin = band.siteUrl;
+if (!origin || new URL(origin).protocol !== "https:") throw new Error("A valid siteUrl is required");
+const preview = band.preview;
+if (!preview && (!band.heroPhoto || !band.shortBio || !band.booking.email || !band.privacyText)) throw new Error("Public launch needs a real hero photo, approved bio, booking email and privacy notice. Keep preview=true until supplied.");
+const paths = ["/", "/zene", "/koncertek", "/epk", "/shop", "/adatvedelem"].filter(pageAvailable);
+await writeFile(resolve(output, "sitemap.xml"), `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${paths.map(p => `<url><loc>${origin}${p}</loc></url>`).join("")}</urlset>`);
+await writeFile(resolve(output, "robots.txt"), `User-agent: *\n${preview ? "Disallow: /" : `Allow: /\nSitemap: ${origin}/sitemap.xml`}\n`);
+await copyFile(resolve(output, "404/index.html"), resolve(output, "404.html"));
+console.log("Sitemap, robots and static 404 generated.");
