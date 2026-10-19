@@ -1,7 +1,7 @@
 import { writeFile, copyFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { band, pageAvailable } from "../app/content.ts";
-const output = resolve("build/client");
+const output = resolve("dist/client");
 const origin = band.siteUrl;
 if (!origin || new URL(origin).protocol !== "https:") throw new Error("A valid siteUrl is required");
 const preview = band.preview;

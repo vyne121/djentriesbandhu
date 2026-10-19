@@ -15,7 +15,7 @@ npm run test:browser
 npm run build
 ```
 
-`build/client/` is the deployable website. The browser tests use installed Google Chrome on macOS; set `PLAYWRIGHT_CHROME_PATH` for another installation or run `npx playwright install chromium` and leave that variable unset on other platforms. Production hosting must serve directory index files and `404.html` with a 404 status for unknown URLs.
+`dist/client/` is the deployable website. The browser tests use installed Google Chrome on macOS; set `PLAYWRIGHT_CHROME_PATH` for another installation or run `npx playwright install chromium` and leave that variable unset on other platforms. Production hosting must serve directory index files and `404.html` with a 404 status for unknown URLs.
 
 ## Replace preview content
 
