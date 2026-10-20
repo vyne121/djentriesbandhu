@@ -1,11 +1,13 @@
 # Before public launch
 
-- Approved logo and exact brand colour.
-- Landscape hero/live photograph and a mobile crop, plus photo credit/permission.
+- [x] Existing wordmark and mascot; forest green / aged cream palette.
+- [x] Full-band hero portrait and live photographs. Additional live photos of the other members can be added later.
+- Photo credit/permission details.
 - Band biography, home base, current lineup and performance format/set lengths.
 - Booking email, phone and complete official social links.
-- Spotify artist/release URLs, release titles and artwork.
-- YouTube live-video ID and poster photo.
+- [x] A Szikra and Végtelen az éj artwork.
+- Confirmed Spotify artist/release URLs.
+- YouTube lyric-video ID initially; music-video ID when released. A Szikra artwork is the current poster.
 - Bandsintown artist identifier and artist-page URL.
 - Shopify store domain, approved products/handles, Hungarian market configuration and policy links; public Storefront token only if required.
 - Full EPK ZIP, high-resolution press photos, logo files, technical rider and stage plot.

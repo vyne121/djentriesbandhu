@@ -58,6 +58,6 @@ function Store({ config }: { config: ShopifyConfig }) {
 }
 export function Shopify() {
   const [active, setActive] = useState(false);
-  if (!band.shopify) return <div className="shop-pending"><ShoppingBag size={23} /><div><h3>A shop hamarosan nyit.</h3><p>A termékek a Shopify-áruház csatlakoztatása után lesznek rendelhetők.</p></div></div>;
+  if (!band.shopify) return <div className="shop-pending"><ShoppingBag size={23} /><div><h3>A webshop hamarosan megnyílik!</h3><p>A termékek a Shopify-áruház csatlakoztatása után lesznek rendelhetők.</p></div></div>;
   return active ? <Store config={band.shopify} /> : <div className="activation"><ShoppingBag className="accent" /><div><h3>Djentries merch</h3><p>A kínálat betöltésével kapcsolat létesül a Shopify-jal.</p></div><Button onClick={() => setActive(true)}>Shop betöltése</Button></div>;
 }

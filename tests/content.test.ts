@@ -19,15 +19,21 @@ describe("external integration boundaries", () => {
 describe("public content gating", () => {
   it("shows unfinished routes in preview and hides them on public launch", () => {
     const original = band.preview;
+    const releases = band.releases;
+    const email = band.booking.email;
     try {
       band.preview = true;
       expect(pageAvailable("/shop")).toBe(true);
       band.preview = false;
       expect(pageAvailable("/shop")).toBe(false);
+      expect(pageAvailable("/epk")).toBe(Boolean(band.shortBio && email));
+      band.booking.email = null;
       expect(pageAvailable("/epk")).toBe(false);
+      expect(pageAvailable("/zene")).toBe(true);
+      band.releases = [];
       expect(pageAvailable("/zene")).toBe(false);
       expect(pageAvailable("/koncertek")).toBe(false);
       expect(pageAvailable("/")).toBe(true);
-    } finally { band.preview = original; }
+    } finally { band.preview = original; band.releases = releases; band.booking.email = email; }
   });
 });

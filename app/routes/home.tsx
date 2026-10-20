@@ -1,14 +1,83 @@
+import { useState } from "react";
 import { Link } from "react-router";
-import { ArrowDown, ArrowUpRight, Disc3, Headphones } from "lucide-react";
-import { band, pageAvailable } from "../content";
-import { Booking, Kicker, LiveVideo, MerchPreview, Placeholder, SectionHeader } from "../components/site";
+import { ArrowDown, ArrowUpRight, Disc3, Headphones, Pause, Play } from "lucide-react";
+import { band, brandAssets, pageAvailable } from "../content";
+import { Booking, Kicker, FeaturedVideo, MerchPreview, Placeholder, SectionHeader } from "../components/site";
 import { ListenButton } from "../components/player";
 import { Button } from "../components/ui/button";
 import { Events } from "../components/events";
 import { pageMeta } from "../lib/meta";
-export const meta = () => pageMeta("Modern Metal / Rock", "Djentries. Zene, koncertdátumok, sajtóanyag és booking. Ismerd meg a zenekart, hallgass bele és találkozz velünk élőben.", "/");
+export const meta = () => pageMeta("Modern metalcore / rock", "Djentries. Zene, koncertdátumok, sajtóanyag és booking. Ismerd meg a zenekart, hallgass bele és találkozz velünk élőben.", "/");
 
 export default function Home() {
   const release = band.releases[0];
-  return <><section className="hero">{(band.heroPhoto || band.preview) && <picture><source media="(max-width: 767px)" srcSet={band.heroMobilePhoto ?? band.heroPhoto ?? "/images/concert-mobile.jpg"} /><img className="hero-image" src={band.heroPhoto ?? "/images/concert.jpg"} alt={band.heroPhoto ? "Djentries koncerten" : "Hangulatkép: reflektorfények egy koncert közönsége felett"} width="2200" height="1467" fetchPriority="high" /></picture>}<div className="hero-overlay" /><div className="wrap hero-content"><div className="hero-topline"><span className="kicker"><span className="status-dot" />MODERN METAL / ROCK</span><span className="hero-index">HANGERŐ FEL. MINDEN MÁS LE.</span></div><div className="hero-title"><p>EZ A MI HANGUNK.</p><h1>DJENTRIES<span>✳</span></h1></div><div className="hero-bottom"><div><p>Nyers energia. Súlyos riffek.<br />Találkozunk a színpad előtt.</p><div className="hero-actions">{pageAvailable("/epk") && <Button asChild><Link to="/epk">Koncertszervezőknek<ArrowUpRight size={18} /></Link></Button>}<ListenButton outline /></div></div><a href="#felfedezes" className="hero-scroll" aria-label="Fedezd fel a zenekart"><ArrowDown size={22} /><span>GÖRGESS LEJJEBB</span></a></div><span className="image-credit">{band.preview ? "Hangulatkép · a zenekari fotó helye" : ""}</span></div></section><div className="manifesto-strip" aria-hidden="true"><span>DJENTRIES</span><span className="strip-star">✳</span><span>MODERN METAL / ROCK</span><span className="strip-star">✳</span><span>ÉREZD. NE CSAK HALLGASD.</span><span className="strip-star">✳</span></div><section className="wrap intro section" id="felfedezes"><Kicker number="01">A zenekar</Kicker><div className="intro-grid"><h2>Nem háttérzaj.<br /><span className="text-muted">Ami benned marad.</span></h2><div><p className="lead">Mi vagyunk a Djentries.<br />Modern metal. Rock. Teljes hangerő.</p>{band.shortBio ? <p>{band.shortBio}</p> : <Placeholder>A zenekar története és bemutatkozása hamarosan.</Placeholder>}{pageAvailable("/epk") && <Link className="text-link" to="/epk">Ismerj meg minket<ArrowUpRight size={17} /></Link>}</div></div></section>{(band.preview || release || band.spotifyArtist) && <section className="release-section"><div className="wrap section"><SectionHeader number="02" label="A hangunk" title="Nyomj egy playt" href="/zene" link="Minden megjelenés" /><div className="release-grid"><div className="record-art"><img src={release?.artwork ?? "/images/record.svg"} alt={release ? `${release.title} lemezborító` : "Illusztratív Djentries lemezborító — látványterv"} width="700" height="700" loading="lazy" /><span className="record-stamp"><Disc3 size={20} />{release ? release.kind : "ARTWORK PREVIEW"}</span></div><div className="release-copy"><Kicker><Headphones size={15} />{release?.kind ?? "Zene / Djentries"}</Kicker><h2>{release?.title ?? <>A csendnek<br />itt vége.</>}</h2><p>Kapcsolódj ki a külvilágból.<br />Kapcsolódj be a hangzásunkba.</p><ListenButton label="Meghallgatom Spotify-on" url={release?.spotify} />{!release && <Placeholder>A kiadvány borítója és Spotify-linkje hamarosan.</Placeholder>}<p className="small muted">A lejátszó kattintásra töltődik be. Nincs automatikus zeneindítás.</p></div></div></div></section>}{(band.preview || band.liveVideoId) && <section className="wrap section"><SectionHeader number="03" label="Djentries élőben" title="Itt minden más" /><LiveVideo /></section>}{(band.preview || band.bandsintown) && <section className="wrap section shows-section"><SectionHeader number="04" label="Koncertek" title="Ott találkozunk" href="/koncertek" link="Összes koncert" /><Events compact />{band.credentials.length > 0 && <div className="credentials">{band.credentials.map(c => <span key={c}>{c}</span>)}</div>}</section>}{(band.preview || band.shopify) && <section className="merch-section"><div className="wrap section"><SectionHeader number="05" label="Djentries merch" title="Viseld a hangerőt" href="/shop" link="Irány a shop" /><MerchPreview /></div></section>}{(band.preview || band.booking.email || band.booking.phone) && <Booking />}</>;
+  const [bannerPaused, setBannerPaused] = useState(false);
+  return <>
+    <section className="hero">
+      <div className="wrap hero-topline">
+        <span className="kicker"><span className="status-dot" />MODERN METALCORE / ROCK</span>
+      </div>
+      <div className="wrap hero-grid">
+        <div className="hero-copy">
+          <div className="hero-title">
+            <h1><span className="sr-only">Djentries</span><img src={brandAssets.wordmark} alt="" width="1400" height="552" /></h1>
+          </div>
+          <p>Dallamos, mégis erős hangzás<br />Érzelmes, de nem érzelgős</p>
+          <div className="hero-actions">
+            {pageAvailable("/epk") && <Button asChild><Link to="/epk">Koncertszervezőknek<ArrowUpRight size={18} /></Link></Button>}
+            <ListenButton label="Hallgass minket!" outline />
+          </div>
+          <a href="#felfedezes" className="hero-scroll"><ArrowDown size={18} /><span>GÖRGESS LEJJEBB</span></a>
+        </div>
+        {band.heroPhoto && <div className="hero-media"><picture>
+          <source media="(max-width: 767px)" srcSet={band.heroMobilePhoto ?? band.heroPhoto} />
+          <img className="hero-image" src={band.heroPhoto} alt="A Djentries négy tagja együtt, zenekari portré" width="1024" height="768" fetchPriority="high" />
+        </picture></div>}
+      </div>
+    </section>
+    <div className="manifesto-strip">
+      <div className="banner-track" aria-hidden="true" data-paused={bannerPaused}>
+        {[0, 1].map(group => <span className="banner-group" key={group}>{"DJENTRIES ".repeat(8)}</span>)}
+      </div>
+      <button className="banner-toggle" aria-label={bannerPaused ? "Banner mozgásának folytatása" : "Banner mozgásának szüneteltetése"} aria-pressed={bannerPaused} onClick={() => setBannerPaused(paused => !paused)}>
+        {bannerPaused ? <Play size={18} /> : <Pause size={18} />}
+      </button>
+    </div>
+    <section className="wrap intro section" id="felfedezes">
+      <Kicker number="01">A zenekar</Kicker>
+      <div className="intro-grid">
+        <h2>Mi vagyunk <span className="text-muted">a Djentries</span></h2>
+        <div>{band.shortBio && <p className="lead">{band.shortBio}</p>}
+          {pageAvailable("/epk") && <Link className="text-link" to="/epk">Ismerj meg minket<ArrowUpRight size={17} /></Link>}
+        </div>
+      </div>
+      <div className="live-photo-pair" aria-label="Djentries koncertfotók">
+        {brandAssets.livePhotos.map(photo => <div className="live-photo" key={photo.src}><img src={photo.src} alt={photo.alt} width="1100" height="1400" loading="lazy" /></div>)}
+      </div>
+    </section>
+    {(band.preview || release || band.spotifyArtist) && <section className="release-section"><div className="wrap section">
+      <SectionHeader number="02" label="A hangunk" title="Hallgass bele a zenénkbe!" href="/zene" link="Minden megjelenés" />
+      <div className="release-grid"><div className="record-art">
+        <img src={release?.artwork ?? "/images/record.svg"} alt={release ? `${release.title} lemezborító` : "Lemezborító látványterv"} width="1000" height="1000" loading="lazy" />
+        <span className="record-stamp"><Disc3 size={20} />{release ? release.kind : "ARTWORK PREVIEW"}</span>
+      </div><div className="release-copy">
+        <Kicker><Headphones size={15} />{release?.kind ?? "Zene / Djentries"}</Kicker>
+        <h2>{release?.title ?? <>A csendnek<br />itt vége.</>}</h2>
+        <p>Külvilág ki / Zene BE!</p>
+        <ListenButton label="Hallgasd meg Spotify-on!" url={release?.spotify} />
+        {!release?.spotify && <Placeholder>A Spotify-link még nincs megadva.</Placeholder>}
+      </div></div>
+    </div></section>}
+    {(band.preview || band.video.youtubeId) && <section className="wrap section">
+      <SectionHeader number="03" label={band.video.kind === "lyric" ? "Dalszövegvideó" : band.video.kind === "music" ? "Videóklip" : "Élőben"} title={band.video.title} /><FeaturedVideo />
+    </section>}
+    {(band.preview || band.bandsintown) && <section className="wrap section shows-section">
+      <SectionHeader number="04" label="Koncertek" title="Találkozz velünk élőben is!" href="/koncertek" link="Összes koncert" /><Events compact />
+      {band.credentials.length > 0 && <div className="credentials">{band.credentials.map(c => <span key={c}>{c}</span>)}</div>}
+    </section>}
+    {(band.preview || band.shopify) && <section className="merch-section"><div className="wrap section">
+      <SectionHeader number="05" label="Djentries merch" title="Válassz zenekaros termékeink közül és viseld büszkén!" href="/shop" link="Irány a shop" /><MerchPreview />
+    </div></section>}
+    {(band.preview || band.booking.email || band.booking.phone) && <Booking />}
+  </>;
 }

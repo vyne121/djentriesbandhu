@@ -6,9 +6,9 @@ import { spotifyEmbed } from "../lib/utils";
 import { Button } from "./ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "./ui/dialog";
 
-const PlayerContext = createContext<(url?: string) => void>(() => {});
+const PlayerContext = createContext<(url?: string | null) => void>(() => {});
 export function usePlayer() { return useContext(PlayerContext); }
-export function ListenButton({ label = "Belehallgatok", url, outline = false }: { label?: string; url?: string; outline?: boolean }) {
+export function ListenButton({ label = "Belehallgatok", url, outline = false }: { label?: string; url?: string | null; outline?: boolean }) {
   const play = usePlayer();
   const [ready, setReady] = useState(false);
   useEffect(() => setReady(true), []);
@@ -20,7 +20,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
   const [missing, setMissing] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [timedOut, setTimedOut] = useState(false);
-  function choose(url?: string) {
+  function choose(url?: string | null) {
     const next = spotifyEmbed(url ?? band.releases[0]?.spotify ?? band.spotifyArtist);
     if (!next) { setMissing(true); return; }
     if (next !== source) { setLoaded(false); setTimedOut(false); setSource(next); }
