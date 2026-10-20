@@ -64,7 +64,7 @@ export default function Home() {
         <Kicker><Headphones size={15} />{release?.kind ?? "Zene / Djentries"}</Kicker>
         <h2>{release?.title ?? <>A csendnek<br />itt vége.</>}</h2>
         <p>Külvilág ki / Zene BE!</p>
-        <ListenButton label="Hallgasd meg Spotify-on!" url={release?.spotify} />
+        <ListenButton label="Hallgasd meg Spotify-on!" url={release?.spotify ?? null} />
         {!release?.spotify && <Placeholder>A Spotify-link még nincs megadva.</Placeholder>}
       </div></div>
     </div></section>}

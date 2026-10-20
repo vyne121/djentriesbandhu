@@ -29,17 +29,25 @@ export const band: BandContent = {
     { name: "Szabó Imre", role: "Basszusgitár" },
   ], setLengths: "45-80 perc, igény szerint",
   credentials: [], pressQuotes: [], booking: { email: "djentriesband@gmail.com", phone: "+36 30 403 24 09", formEmail: "djentriesband+szervezes@gmail.com" },
-  socials: [],
-  releases: [
-    { title: "A Szikra", kind: "Megjelent", spotify: null, artwork: "/images/brand/a-szikra.webp" },
-    { title: "Végtelen az éj", kind: "Zene", spotify: null, artwork: "/images/brand/vegtelen-az-ej.webp" },
-    { title: "Djentries", kind: "Zene", spotify: null, artwork: "/images/brand/cover-candidate.webp" },
-    { title: "Vedd el ami kell", kind: "Zene", spotify: null, artwork: "/images/brand/vedd-el-ami-kell.jpg" },
-    { title: "Harcra kész", kind: "Zene", spotify: null, artwork: "/images/brand/harcra-kesz.jpg" },
-    { title: "Látomás", kind: "Zene", spotify: null, artwork: "/images/brand/latomas.jpg" },
+  socials: [
+    { name: "Facebook", url: "https://www.facebook.com/djentries" },
+    { name: "TikTok", url: "https://www.tiktok.com/@djentries" },
+    { name: "Instagram", url: "https://www.instagram.com/djentries" },
+    { name: "YouTube", url: "https://www.youtube.com/@Djentries" },
+    { name: "Spotify", url: "https://open.spotify.com/artist/25btqvZzKJ5fBQdg6usk9F" },
+    { name: "Apple Music", url: "https://music.apple.com/hu/artist/djentries/1614085728" },
   ],
-  spotifyArtist: null, bandsintown: null,
-  video: { kind: "lyric", title: "A Szikra", youtubeId: null, poster: "/images/brand/a-szikra.webp" },
+  releases: [
+    { title: "A Szikra", kind: "Megjelent", spotify: "https://open.spotify.com/track/3taDUP2vKAV3r5nefp99oP", artwork: "/images/brand/a-szikra.webp" },
+    { title: "Végtelen az éj", kind: "Zene", spotify: "https://open.spotify.com/track/1WHpIS0SbbJ8RPcGgrHYAF", artwork: "/images/brand/vegtelen-az-ej.webp" },
+    { title: "Djentries", kind: "Zene", spotify: "https://open.spotify.com/track/4EkWjedrBqZpN5LNrWdZPr", artwork: "/images/brand/cover-candidate.webp" },
+    { title: "Vedd el ami kell", kind: "Zene", spotify: "https://open.spotify.com/track/2qJ86jAPwc1Tuocw1eUtwV", artwork: "/images/brand/vedd-el-ami-kell.jpg" },
+    { title: "Harcra kész", kind: "Zene", spotify: "https://open.spotify.com/track/5TIB46dabQdC7O9bMxQ2vW", artwork: "/images/brand/harcra-kesz.jpg" },
+    { title: "Látomás", kind: "Zene", spotify: "https://open.spotify.com/track/5NQ8hasEj9x8EN3YROsJuV", artwork: "/images/brand/latomas.jpg" },
+  ],
+  spotifyArtist: "https://open.spotify.com/artist/25btqvZzKJ5fBQdg6usk9F",
+  bandsintown: { artist: "id_15632384", url: "https://www.bandsintown.com/a/15632384" },
+  video: { kind: "lyric", title: "Végtelen az éj", youtubeId: "oPYge6KiqLw", poster: "/images/brand/vegtelen-az-ej.webp" },
   downloads: [
     { label: "Teljes sajtóanyag", detail: "Biográfia, fotók és logók · ZIP", href: null },
     { label: "Sajtófotók", detail: "Nagy felbontású zenekari képek · ZIP", href: null },
@@ -47,6 +55,7 @@ export const band: BandContent = {
     { label: "Technikai rider", detail: "Technikai igények · PDF", href: null },
     { label: "Stage plot", detail: "Színpadkép és csatornakiosztás · PDF", href: null },
   ],
+  // Shopify store: https://kz01mb-tv.myshopify.com - no products selected yet.
   shopify: null, privacyText: null,
 };
 

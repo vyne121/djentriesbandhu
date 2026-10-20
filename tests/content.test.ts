@@ -21,6 +21,8 @@ describe("public content gating", () => {
     const original = band.preview;
     const releases = band.releases;
     const email = band.booking.email;
+    const artist = band.spotifyArtist;
+    const concerts = band.bandsintown;
     try {
       band.preview = true;
       expect(pageAvailable("/shop")).toBe(true);
@@ -31,9 +33,11 @@ describe("public content gating", () => {
       expect(pageAvailable("/epk")).toBe(false);
       expect(pageAvailable("/zene")).toBe(true);
       band.releases = [];
+      band.spotifyArtist = null;
+      band.bandsintown = null;
       expect(pageAvailable("/zene")).toBe(false);
       expect(pageAvailable("/koncertek")).toBe(false);
       expect(pageAvailable("/")).toBe(true);
-    } finally { band.preview = original; band.releases = releases; band.booking.email = email; }
+    } finally { band.preview = original; band.releases = releases; band.booking.email = email; band.spotifyArtist = artist; band.bandsintown = concerts; }
   });
 });

@@ -19,6 +19,11 @@ test("all pages render without overflow or hydration errors", async ({ page }, i
   await page.screenshot({ path: `../${info.project.name}-preview.png`, fullPage: true });
 });
 test("missing integrations are honest and no third-party content loads automatically", async ({ page }) => {
+  await page.route("**/app/content.ts*", async route => {
+    const response = await route.fetch();
+    const body = (await response.text()).replace(/spotify: (?:null|"[^"]*")/g, "spotify: null").replace(/spotifyArtist: (?:null|"[^"]*")/, "spotifyArtist: null");
+    await route.fulfill({ response, body });
+  });
   const external: string[] = [];
   page.on("request", r => { if (!r.url().startsWith("http://127.0.0.1") && /^https?:/.test(r.url())) external.push(r.url()); });
   await page.goto("/");
@@ -46,10 +51,6 @@ test("mobile navigation closes and restores focus", async ({ page }, info) => {
   await expect(page.getByRole("dialog")).toHaveCount(0);
 });
 test("Bandsintown fails clearly after activation without claiming no events", async ({ page }) => {
-  await page.route("**/app/content.ts*", async route => {
-    const response = await route.fetch();
-    await route.fulfill({ response, body: (await response.text()).replace("bandsintown: null", 'bandsintown: {artist: "Djentries", url: "https://www.bandsintown.com/a/123-djentries"}') });
-  });
   await page.route("https://widgetv3.bandsintown.com/**", route => route.abort());
   await page.goto("/koncertek");
   await expect(page.locator("iframe")).toHaveCount(0);
@@ -71,14 +72,11 @@ test("Shopify script failure keeps a real-store fallback", async ({ page }) => {
   await expect(page.getByRole("link", { name: "Shopify-áruház megnyitása" })).toHaveAttribute("href", "https://djentries-test.myshopify.com");
 });
 test("one Spotify iframe persists across internal page navigation", async ({ page }, info) => {
-  await page.route("**/app/content.ts*", async route => {
-    const response = await route.fetch();
-    const body = (await response.text()).replace("spotifyArtist: null", 'spotifyArtist: "https://open.spotify.com/artist/25btqvZzKJ5fBQdg6usk9F"');
-    await route.fulfill({ response, body });
-  });
   await page.route("https://open.spotify.com/embed/**", route => route.fulfill({ contentType: "text/html", body: "<!doctype html><title>Spotify test fixture</title>Player" }));
-  await page.goto("/zene");
-  await page.getByRole("button", { name: "Hallgasd meg Spotify-on!", exact: true }).first().click();
+  await page.goto("/");
+  await page.getByRole("button", { name: "Hallgass minket!", exact: true }).click();
+  if ((page.viewportSize()?.width ?? 1440) < 768) await page.getByRole("button", { name: "Menü megnyitása" }).click();
+  await page.getByRole("link", { name: "Zene", exact: true }).click();
   await expect(page.getByTestId("spotify-player")).toHaveCount(1);
   await page.evaluate(() => (document.querySelector('[data-testid="spotify-player"]') as HTMLElement).dataset.instance = "persistent");
   await page.getByRole("link", { name: "Djentries főoldal" }).click();
@@ -90,6 +88,7 @@ test("one Spotify iframe persists across internal page navigation", async ({ pag
   await expect(page.getByTestId("spotify-player")).toHaveCount(0);
 });
 test("approved branding preserves the whole band, cover colours and honest video/merch labels", async ({ page }) => {
+  await page.route("https://www.youtube-nocookie.com/**", route => route.fulfill({ contentType: "text/html", body: "<!doctype html><title>Video fixture</title>Video" }));
   await page.goto("/");
   await expect(page.locator("body")).toHaveCSS("background-color", "rgb(7, 28, 24)");
   await expect(page.getByRole("heading", { name: "Hallgass bele a zenénkbe!", exact: true })).toBeVisible();
@@ -106,9 +105,9 @@ test("approved branding preserves the whole band, cover colours and honest video
   await expect(page.locator(".record-art img")).toHaveAttribute("src", /brand\/a-szikra.webp/);
   await expect(page.locator(".live-photo-pair img")).toHaveCount(2);
   await expect(page.locator(".footer-mascot")).toHaveAttribute("src", /brand\/mascot.webp/);
-  await page.getByRole("button", { name: "A Szikra - dalszövegvideó megnyitása" }).click();
+  await page.getByRole("button", { name: "Végtelen az éj - dalszövegvideó megnyitása" }).click();
   await expect(page.getByRole("dialog")).toContainText("dalszövegvideó");
-  await expect(page.getByRole("dialog").locator("iframe")).toHaveCount(0);
+  await expect(page.getByRole("dialog").locator("iframe")).toHaveAttribute("src", "https://www.youtube-nocookie.com/embed/oPYge6KiqLw?autoplay=0");
   await page.getByRole("button", { name: "Bezárás", exact: true }).click();
   await page.goto("/shop");
   await expect(page.locator(".merch-art img")).toHaveAttribute("src", /brand\/mascot-shirt.svg/);

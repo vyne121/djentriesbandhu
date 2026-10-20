@@ -17,7 +17,13 @@ export function SectionHeader({ number, label, title, href, link }: { number: st
   return <div className="section-heading"><div><Kicker number={number}>{label}</Kicker><h2>{title}{!/[.!?…]$/.test(title.trim()) && <span className="accent">.</span>}</h2></div>{href && pageAvailable(href) && <Link className="text-link" to={href}>{link}<ArrowUpRight size={18} /></Link>}</div>;
 }
 export function Placeholder({ children }: { children: ReactNode }) { return band.preview ? <p className="preview-note"><span />{children}</p> : null; }
-export function SocialLinks() { return <div className="social-links">{band.socials.filter(s => safeExternalUrl(s.url)).map(s => <a key={s.url} href={s.url} target="_blank" rel="noopener noreferrer">{s.name}<ArrowUpRight size={14} /></a>)}</div>; }
+const socialIcons: Record<string, string> = { Facebook: "facebook", TikTok: "tiktok", Instagram: "instagram", YouTube: "youtube", Spotify: "spotify", "Apple Music": "applemusic" };
+export function SocialLinks() {
+  return <div className="social-links">{band.socials.filter(s => safeExternalUrl(s.url)).map(s => <a key={s.url} href={s.url} target="_blank" rel="noopener noreferrer">
+    {socialIcons[s.name] && <svg className="social-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><use href={`/images/social-icons.svg#${socialIcons[s.name]}`} /></svg>}
+    <span>{s.name}</span>
+  </a>)}</div>;
+}
 
 export function Booking({ compact = false }: { compact?: boolean }) {
   const [copy, setCopy] = useState<"idle" | "done" | "failed">("idle");

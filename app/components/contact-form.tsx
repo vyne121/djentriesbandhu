@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import { Link } from "react-router";
 import { Send } from "lucide-react";
 import { band } from "../content";
 import { Button } from "./ui/button";
@@ -60,11 +59,11 @@ export function ContactForm() {
       <label>Tárgy<input name="subject" required maxLength={160} /></label>
       <label>Üzenet<textarea name="message" rows={5} required maxLength={8000} /></label>
       <div className="contact-honeypot" aria-hidden="true"><label>Hagyd üresen<input name="_honey" tabIndex={-1} autoComplete="off" /></label></div>
-      <p className="contact-notice">Az üzenetet a FormSubmit továbbítja a zenekarnak. <Link to="/adatvedelem">Adatkezelési tájékoztató</Link></p>
+      <p className="contact-notice">Az üzenetet a FormSubmit továbbítja a zenekarnak. <a href="/adatvedelem" target="_blank" rel="noopener noreferrer" aria-label="Adatkezelési tájékoztató (új lapon)">Adatkezelési tájékoztató</a></p>
       <Button type="submit" disabled={!ready}><Send size={16} />{state === "sending" ? "Küldés folyamatban…" : "Üzenet küldése"}</Button>
     </fieldset>
     <p ref={status} tabIndex={-1} className="contact-status" role="status" aria-live="polite" aria-atomic="true">
-      {state === "success" ? "Köszönjük! Az üzenetedet a küldőszolgáltatás fogadta." : state === "error" ? "Nem kaptunk választ a küldőszolgáltatástól. Az üzeneted megmaradt. Próbáld újra később, vagy írj közvetlenül e-mailt." : state.startsWith("error:") ? (/activat|actived|confirm.{0,60}email/i.test(state.slice(6)) ? "A fogadó e-mail-címet még aktiválni kell. Keresd a FormSubmit aktiváló levelét a djentriesband+szervezes@gmail.com postafiókban, a spam mappában is. A kitöltött üzenet megmaradt." : "A küldés nem sikerült. Az üzeneted megmaradt. Ellenőrizd a mezőket, vagy írj közvetlenül e-mailt.") : state === "sending" ? "Az üzenet küldése folyamatban." : ""}
+      {state === "success" ? "Köszönjük! Az üzenetedet a küldőszolgáltatás fogadta." : state === "error" ? "Nem kaptunk választ a küldőszolgáltatástól. Az üzeneted megmaradt. Próbáld újra később, vagy írj közvetlenül e-mailt." : state.startsWith("error:") ? (/activat|actived|confirm.{0,60}email/i.test(state.slice(6)) ? `A fogadó e-mail-címet még aktiválni kell. Keresd a FormSubmit aktiváló levelét a ${recipient} postafiókban, a spam mappában is. A kitöltött üzenet megmaradt.` : "A küldés nem sikerült. Az üzeneted megmaradt. Ellenőrizd a mezőket, vagy írj közvetlenül e-mailt.") : state === "sending" ? "Az üzenet küldése folyamatban." : ""}
     </p>
     {state.startsWith("error:") && <p className="small contact-provider-error">Szolgáltatói válasz: {state.slice(6)}</p>}
   </form>;

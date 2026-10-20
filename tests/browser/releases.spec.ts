@@ -56,7 +56,7 @@ test("single-release carousel keeps listening and disables paging", async ({ pag
   await expect(carousel.getByRole("button", { name: "Előző megjelenés" })).toBeDisabled();
   await expect(carousel.getByRole("button", { name: "Következő megjelenés" })).toBeDisabled();
   await carousel.getByRole("button", { name: "Hallgasd meg Spotify-on!", exact: true }).click();
-  await expect(page.getByRole("dialog")).toContainText("Spotify");
+  await expect(page.getByRole("dialog")).toContainText("Ez a megjelenés jelenleg nem hallgatható meg az oldalon.");
 });
 
 

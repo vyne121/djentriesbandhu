@@ -88,3 +88,41 @@ test("activation response explains the missing confirmation without clearing the
   await expect(form.locator(".contact-provider-error")).toContainText("This form needs Activation");
   await expect(form.getByLabel("Üzenet", { exact: true })).toHaveValue("Ez kizárólag helyi, elfogott tesztüzenet.");
 });
+
+test("privacy opens separately and preserves every draft field", async ({ page }) => {
+  await page.goto("/epk");
+  const form = await fillForm(page);
+  const link = form.getByRole("link", { name: "Adatkezelési tájékoztató (új lapon)" });
+  await expect(link).toHaveAttribute("target", "_blank");
+  await expect(link).toHaveAttribute("rel", "noopener noreferrer");
+  const popupPromise = page.waitForEvent("popup");
+  await link.click();
+  const popup = await popupPromise;
+  await expect(popup).toHaveURL(/\/adatvedelem$/);
+  await popup.close();
+  await expect(page).toHaveURL(/\/epk$/);
+  for (const [label, value] of [["Név", "Teszt Szervező"], ["E-mail-cím", "booker@example.com"], ["Tárgy", "Koncertmegkeresés"], ["Üzenet", "Ez kizárólag helyi, elfogott tesztüzenet."]]) {
+    await expect(form.getByLabel(label, { exact: true })).toHaveValue(value);
+  }
+});
+
+test("activation notice uses the configured recipient", async ({ page }) => {
+  const configured = "booking-test@example.com";
+  await page.route("**/app/content.ts*", async route => {
+    const response = await route.fetch();
+    await route.fulfill({ response, body: (await response.text()).replace(`formEmail: "${recipient}"`, `formEmail: "${configured}"`) });
+  });
+  let destination = "";
+  await page.route("https://formsubmit.co/**", route => {
+    destination = route.request().url();
+    return route.fulfill({ contentType: "application/json", body: JSON.stringify({ success: false, message: "This form needs Activation. Check your email." }) });
+  });
+  await page.goto("/epk");
+  const form = await fillForm(page);
+  await form.getByRole("button", { name: "Üzenet küldése", exact: true }).click();
+  await expect(form.getByRole("status")).toContainText(configured);
+  expect(destination).toBe(`https://formsubmit.co/ajax/${encodeURIComponent(configured)}`);
+  await expect(form.getByRole("status")).not.toContainText(recipient);
+  await expect(form.getByLabel("Üzenet", { exact: true })).toHaveValue("Ez kizárólag helyi, elfogott tesztüzenet.");
+  await expect(page.getByRole("link", { name: "djentriesband@gmail.com", exact: true })).toBeVisible();
+});
